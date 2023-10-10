@@ -1,4 +1,6 @@
 import re
+from app.models.constants import TextProcessingConstants
+from app.models.constants import Constants
 
 """
     Extracts specific sections from a given text, including skills, education, and work experience.
@@ -24,28 +26,28 @@ import re
 """
 
 
-# Defining a function to extract the specific section of the text.
-def extract_sections(text: str) -> tuple:
-    # Define regular expressions for skills, education, and work experience
-    skills_pattern = re.compile(r'\bSkills\b(.*?)(?=\w+\s*-\s*Exprience|\bEducation\b|\bCompany\b|$)',
-                                re.DOTALL | re.IGNORECASE)
-    education_pattern = re.compile(r'\bEducation\b(.*?)(?=\bSkills\b|\bCompany\b|$)', re.DOTALL | re.IGNORECASE)
-    work_experience_pattern = re.compile(r'\bCompany\b(.*?)(?=\bSkills\b|\bEducation\b|$)', re.DOTALL | re.IGNORECASE)
+class SectionExtractor:
+    @staticmethod
+    def extract_sections(text: str) -> tuple:
+        # Define regular expressions for skills, education, and work experience
+        skills_pattern = re.compile(TextProcessingConstants.SKILLS_PATTERN_REGEX, re.DOTALL | re.IGNORECASE)
+        education_pattern = re.compile(TextProcessingConstants.EDUCATION_PATTERN_REGEX, re.DOTALL | re.IGNORECASE)
+        work_experience_pattern = re.compile(TextProcessingConstants.EXPERIENCE_PATTERN_REGEX, re.DOTALL | re.IGNORECASE)
 
-    # Extract matches
-    skills_match = skills_pattern.search(text)
-    education_match = education_pattern.search(text)
-    work_experience_match = work_experience_pattern.search(text)
+        # Extract matches
+        skills_match = skills_pattern.search(text)
+        education_match = education_pattern.search(text)
+        work_experience_match = work_experience_pattern.search(text)
 
-    skills = skills_match.group(1).strip() if skills_match else None
-    education = education_match.group(1).strip() if education_match else None
-    experience = work_experience_match.group(1).strip() if work_experience_match else None
+        skills = skills_match.group(Constants.TEXT_GROUP).strip() if skills_match else None
+        education = education_match.group(Constants.TEXT_GROUP).strip() if education_match else None
+        experience = work_experience_match.group(Constants.TEXT_GROUP).strip() if work_experience_match else None
 
-    # Return the extracted sections
-    return skills, education, experience
+        # Return the extracted sections
+        return skills, education, experience
 
 
-# Example usage of the extract_sections function
+# Example usage of the TextExtractor class
 resume_text = """
 Skills * Programming Languages: Python (pandas, numpy, scipy, scikit-learn, matplotlib), Sql, Java, JavaScript/JQuery.
 * Machine learning: Regression, SVM, Naïve Bayes, KNN, Random Forest, Decision Trees, Boosting techniques, Cluster Analysis,
@@ -62,8 +64,11 @@ Python- Experience - 24 months
 Company Details
 """
 
-# Call the function to extract sections
-skills_demo, education_demo, experience_demo = extract_sections(resume_text)
+# Create an instance of the TextExtractor class
+section_extractor = SectionExtractor()
+
+# Call the static method to extract sections
+skills_demo, education_demo, experience_demo = section_extractor.extract_sections(resume_text)
 
 # Display the extracted sections
 print("Skills:", skills_demo)

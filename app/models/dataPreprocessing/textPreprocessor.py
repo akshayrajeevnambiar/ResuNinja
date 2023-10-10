@@ -1,5 +1,6 @@
 import re
 from functools import reduce
+from app.models.constants import TextProcessingConstants
 
 """
 clean_text_functions.py
@@ -17,63 +18,56 @@ Usage:
 """
 
 
-# Converts the given string into lowercase.
-def convert_to_lower(text: str) -> str:
-    return text.lower()
+class TextCleaner:
+    @staticmethod
+    def convert_to_lower(text: str) -> str:
+        return text.lower()
 
+    @staticmethod
+    def remove_urls(text: str) -> str:
+        return re.sub(TextProcessingConstants.URL_REGEX, ' ', text)
 
-# Remove URLs from the given text.
-def remove_urls(text: str) -> str:
-    return re.sub('http\S+\s*', ' ', text)
+    @staticmethod
+    def remove_hashtags(text: str) -> str:
+        return re.sub(TextProcessingConstants.HASHTAG_REGEX, '', text)
 
+    @staticmethod
+    def remove_mentions(text: str) -> str:
+        return re.sub(TextProcessingConstants.MENTION_REGEX, '  ', text)
 
-# Remove hashtags from the given text.
-def remove_hashtags(text: str) -> str:
-    return re.sub('#\S+', '', text)
+    @staticmethod
+    def remove_punctuations(text: str) -> str:
+        return re.sub(TextProcessingConstants.PUNCTUATION_REGEX, ' ', text)
 
+    @staticmethod
+    def remove_whitespaces(text: str) -> str:
+        return re.sub(TextProcessingConstants.WHITESPACE_REGEX, ' ', text)
 
-# Remove mentions (usernames starting with '@') from the given text.
-def remove_mentions(text: str) -> str:
-    return re.sub('@\S+', '  ', text)
+    @staticmethod
+    def remove_non_ascii_characters(text: str) -> str:
+        return re.sub(TextProcessingConstants.NON_ASCII_REGEX, ' ', text)
 
+    @staticmethod
+    def remove_rt_and_cc(text: str) -> str:
+        return re.sub(TextProcessingConstants.RT_CC_REGEX, ' ', text)
 
-# Remove various punctuation characters from the given text.
-def remove_punctuations(text: str) -> str:
-    return re.sub('[%s]' % re.escape("""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""), ' ', text)
+    @staticmethod
+    def clean_text(text: str) -> str:
+        regex_functions = [
+            TextCleaner.convert_to_lower,
+            TextCleaner.remove_urls,
+            TextCleaner.remove_hashtags,
+            TextCleaner.remove_mentions,
+            TextCleaner.remove_non_ascii_characters,
+            TextCleaner.remove_rt_and_cc,
+            TextCleaner.remove_punctuations,
+            TextCleaner.remove_whitespaces
+        ]
 
-
-# Remove extra whitespaces from the given text.
-def remove_whitespaces(text: str) -> str:
-    return re.sub('\s+', ' ', text)
-
-
-# Remove non-ASCII characters from the given text.
-def remove_non_ascii_characters(text: str) -> str:
-    return re.sub(r'[^\x00-\x7f]', r' ', text)
-
-
-# Remove 'RT' and 'cc' from the given text.
-def remove_rt_and_cc(text: str) -> str:
-    return re.sub('RT|cc', ' ', text)
-
-
-# Apply a sequence of cleaning methods to the given text.
-def clean_text(text: str) -> str:
-    regex_functions = [
-        convert_to_lower,
-        remove_urls,
-        remove_hashtags,
-        remove_mentions,
-        remove_non_ascii_characters,
-        remove_rt_and_cc,
-        remove_punctuations,
-        remove_whitespaces
-    ]
-
-    return reduce(lambda t, func: func(t), regex_functions, text)
+        return reduce(lambda t, func: func(t), regex_functions, text)
 
 
 # Example Usage:
 input_text = "Your # input text here."
-cleaned_text = clean_text(input_text)
+cleaned_text = TextCleaner.clean_text(input_text)
 print(cleaned_text)

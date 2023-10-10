@@ -1,6 +1,7 @@
 import nltk
 import string
 from nltk.corpus import stopwords
+from app.models.constants import Constants
 
 """
 Remove common English stop words and punctuation from the input text.
@@ -42,7 +43,7 @@ def stop_word_removal(text: str) -> list:
 """
 
 
-def get_word_frequency_dist(words: list, count: int = 50) -> list:
+def get_word_frequency_dist(words: list, count: int = Constants.COMMON_WORD_COUNT) -> list:
     # Create a frequency distribution of the input list of words
     word_freq_dist = nltk.FreqDist(words)
 
