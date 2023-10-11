@@ -19,3 +19,15 @@ class ModelConstants:
 
     # Common word count
     COMMON_WORD_COUNT = 50
+
+    # Test size split percent
+    TEST_SIZE = 0.2
+
+    # Random state value
+    RANDOM_STATE = 42
+
+    # Max number of iteration for the model
+    MAX_ITERS = 500
+
+    # Number of estimators
+    NUMBER_OF_ESTIMATORS = 100
