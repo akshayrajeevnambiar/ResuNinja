@@ -1,6 +1,6 @@
 import re
-from app.models.constants import TextProcessingConstants
-from app.models.constants import Constants
+from app.static.constants.TextProcessingConstants import TextProcessingConstants
+from app.static.constants.ModelConstants import ModelConstants
 
 """
     Extracts specific sections from a given text, including skills, education, and work experience.
@@ -39,9 +39,9 @@ class SectionExtractor:
         education_match = education_pattern.search(text)
         work_experience_match = work_experience_pattern.search(text)
 
-        skills = skills_match.group(Constants.TEXT_GROUP).strip() if skills_match else None
-        education = education_match.group(Constants.TEXT_GROUP).strip() if education_match else None
-        experience = work_experience_match.group(Constants.TEXT_GROUP).strip() if work_experience_match else None
+        skills = skills_match.group(ModelConstants.TEXT_GROUP).strip() if skills_match else None
+        education = education_match.group(ModelConstants.TEXT_GROUP).strip() if education_match else None
+        experience = work_experience_match.group(ModelConstants.TEXT_GROUP).strip() if work_experience_match else None
 
         # Return the extracted sections
         return skills, education, experience
