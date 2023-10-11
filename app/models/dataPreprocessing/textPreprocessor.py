@@ -1,6 +1,6 @@
 import re
 from functools import reduce
-from app.static.constants.TextProcessingConstants import TextProcessingConstants
+from app.static.constants.textProcessingConstants import TextProcessingConstants
 
 """
 clean_text_functions.py

@@ -1,7 +1,7 @@
 import nltk
 import string
 from nltk.corpus import stopwords
-from app.static.constants.ModelConstants import ModelConstants
+from app.static.constants.modelConstants import ModelConstants
 
 """
 Remove common English stop words and punctuation from the input text.

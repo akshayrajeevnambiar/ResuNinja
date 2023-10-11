@@ -1,5 +1,5 @@
 """
-TextProcessingConstants.py
+textProcessingConstants.py
 
 - This module defines constants used throughout the project.
 

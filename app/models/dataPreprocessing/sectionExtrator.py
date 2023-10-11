@@ -1,6 +1,6 @@
 import re
-from app.static.constants.TextProcessingConstants import TextProcessingConstants
-from app.static.constants.ModelConstants import ModelConstants
+from app.static.constants.textProcessingConstants import TextProcessingConstants
+from app.static.constants.modelConstants import ModelConstants
 
 """
     Extracts specific sections from a given text, including skills, education, and work experience.
