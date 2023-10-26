@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-string: border-box;
+    font-family: 'Sometype Mono', monospace;
+}
+
+header {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 1005;
+    height: 80px;
+}
+
+header h4 {
+    position: absolute;
+    left: 10px;
+    bottom: 1rem;
+    font-size: 1.6rem;
+}
+
+.intro {
+    position: fixed;
+    r-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #161616
+    transition: 1s;
+}
+
+.logo-header {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+    color: #ffffff
+}

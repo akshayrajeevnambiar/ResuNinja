@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 from app.static.constants.modelConstants import ModelConstants
-from app.models.dataPreprocessing.wordProcessor import WordProcessor
+from app.dataPreprocessing.wordProcessor import WordProcessor
 
 
 class Models:
@@ -114,8 +114,8 @@ X_sparse = csr_matrix(X)
 models_instance = Models(X_sparse, y)
 
 # Train and evaluate Logistic Regression
-logistic_regression_predictions = models_instance.logistic_regression()
-accuracy_lr, report_lr = models_instance.get_classification_report(models_instance.y_test, logistic_regression_predictions)
+logistic_predictions = models_instance.logistic_regression()
+accuracy_lr, report_lr = models_instance.get_classification_report(models_instance.y_test, logistic_predictions)
 
 print("Logistic Regression Accuracy:", accuracy_lr)
 print("Logistic Regression Classification Report:\n", report_lr)
@@ -135,8 +135,3 @@ accuracy_nb, report_nb = models_instance.get_classification_report(models_instan
 
 print("\nNaive Bayes Accuracy:", accuracy_nb)
 print("Naive Bayes Classification Report:\n", report_nb)
-
-
-
-
-

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Machine Learning Web App</title>
+</head>
+<body>
+    <h1>Machine Learning Model Deployment</h1>
+    <form action="/predict" method="post">
+        <label for="input_name">Input Data:</label>
+        <input type="text" name="input_name" id="input_name" required>
+        <button type="submit">Predict</button>
+    </form>
+    {% if prediction %}
+    <h2>Prediction:</h2>
+    <p>{{ prediction }}</p>
+    {% endif %}
+</body>
+</html>
