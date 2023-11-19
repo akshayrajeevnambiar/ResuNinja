@@ -118,7 +118,7 @@ class Model:
         X, y = make_classification(n_samples=1000, n_features=20, n_classes=3, random_state=42)
         X_sparse = csr_matrix(X)
         # Instantiate the Models class
-        models_instance = Models(X_sparse, y)
+        models_instance = Model(X_sparse, y)
 
         # Train and evaluate Logistic Regression
         logistic_regression_predictions = models_instance.logistic_regression()
