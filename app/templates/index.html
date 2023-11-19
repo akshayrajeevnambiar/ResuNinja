@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ResuNinja</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0px 0px 20px 0px #000000;
+            border-radius: 10px;
+        }
+        form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0px 25px -12px;
+            border: none;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        form label {
+            font-weight: bold;
+            color: #333;
+        }
+        form button[type="submit"] {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        form button[type="submit"]:hover {
+            background: #2980b9;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>ResuNinja</h1>
+        <form method="POST" action="/" enctype="multipart/form-data">
+            <label for="resumes">Upload Resume(s):</label>
+                <input id="fileInput" type="file" name="resumes" multiple onchange="updateList()">
+            <br><br>
+            <label for="model">Choose a Prediction Model:</label>
+            <select id="model" name="model">
+            <option value="logisticRegression">Logistic Regression (Recommended)</option>
+            <option value="svm">support Vector Machine</option>
+            <option value="naiveBayes">Naive Bayes</option>
+            <option value="knn">K Nearest Neighbours</option>
+            <option value="randomForest">Random Forest</option>
+            </select>
+            <br><br>
+            <p>Selected files:</p>
+    
+            <div id="fileList"></div>
+            <br><br><br><br>
+            
+            <input type="submit" value="Upload & Analyze">
+        </form>
+        
+        {% if prediction %}
+        <h3>Predictions:</h3>
+        <ul>
+            <li>{{ prediction[0] }} - Confidence: {{ prediction[1] }}</li>
+        </ul>
+        {% endif %}
+    </div>
+    
+</body>
+<script src="../static/js/index.js"></script>  
+</html>

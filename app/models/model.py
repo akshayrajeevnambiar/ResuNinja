@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn.svm import SVC
 from scipy.sparse import csr_matrix
 from sklearn.naive_bayes import MultinomialNB
@@ -8,15 +9,18 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
-from app.static.constants.modelConstants import ModelConstants
-from app.models.dataPreprocessing.wordProcessor import WordProcessor
+from models.dataPreprocessing.wordProcessor import WordProcessor
+from models.dataPreprocessing.constants.modelConstants import ModelConstants
 
+class Model:
 
-class Models:
+    def __init__(self):
 
-    def __init__(self, x: csr_matrix, y: np.ndarray):
-        self.x = x
-        self.y = y
+        
+        resume_data_set = pd.read_csv("data/UpdatedResumeDataSet.csv")
+
+        self.x = resume_data_set['Resume']
+        self.y = resume_data_set['Category']
 
         # Instantiate WordProcessor
         self.wordProcessor = WordProcessor()
@@ -26,6 +30,8 @@ class Models:
             x = self.x,
             y = self.y
         )
+
+        
 
     """
        Creates a Logistic Regression model and fits it using the training data.
@@ -105,38 +111,44 @@ class Models:
 
         return accuracy, classification_rep
 
+    @staticmethod
+    def load_train_models():
+        # Example usage
+        # Generate synthetic data for demonstration
+        X, y = make_classification(n_samples=1000, n_features=20, n_classes=3, random_state=42)
+        X_sparse = csr_matrix(X)
+        # Instantiate the Models class
+        models_instance = Models(X_sparse, y)
 
-# Example usage
-# Generate synthetic data for demonstration
-X, y = make_classification(n_samples=1000, n_features=20, n_classes=3, random_state=42)
-X_sparse = csr_matrix(X)
-# Instantiate the Models class
-models_instance = Models(X_sparse, y)
+        # Train and evaluate Logistic Regression
+        logistic_regression_predictions = models_instance.logistic_regression()
+        accuracy_lr, report_lr = models_instance.get_classification_report(models_instance.y_test, logistic_regression_predictions)
 
-# Train and evaluate Logistic Regression
-logistic_regression_predictions = models_instance.logistic_regression()
-accuracy_lr, report_lr = models_instance.get_classification_report(models_instance.y_test, logistic_regression_predictions)
+        print("Logistic Regression Accuracy:", accuracy_lr)
+        print("Logistic Regression Classification Report:\n", report_lr)
 
-print("Logistic Regression Accuracy:", accuracy_lr)
-print("Logistic Regression Classification Report:\n", report_lr)
+        # Train and evaluate Support Vector Machine
+        svm_predictions = models_instance.svm()
+        accuracy_svm, report_svm = models_instance.get_classification_report(models_instance.y_test, svm_predictions)
 
-# Train and evaluate Support Vector Machine
-svm_predictions = models_instance.svm()
-accuracy_svm, report_svm = models_instance.get_classification_report(models_instance.y_test, svm_predictions)
+        print("\nSVM Accuracy:", accuracy_svm)
+        print("SVM Classification Report:\n", report_svm)
 
-print("\nSVM Accuracy:", accuracy_svm)
-print("SVM Classification Report:\n", report_svm)
+        # Similarly, train and evaluate other models...
 
-# Similarly, train and evaluate other models...
+        # Train and evaluate Naive Bayes
+        nb_predictions = models_instance.naive_bayes()
+        accuracy_nb, report_nb = models_instance.get_classification_report(models_instance.y_test, nb_predictions)
 
-# Train and evaluate Naive Bayes
-nb_predictions = models_instance.naive_bayes()
-accuracy_nb, report_nb = models_instance.get_classification_report(models_instance.y_test, nb_predictions)
+        print("\nNaive Bayes Accuracy:", accuracy_nb)
+        print("Naive Bayes Classification Report:\n", report_nb)
 
-print("\nNaive Bayes Accuracy:", accuracy_nb)
-print("Naive Bayes Classification Report:\n", report_nb)
+        return models_instance
+    
+    def classify_resume(self, inputResume):
+        return 1
+    def classify_resumes(self, inputResumes):
+        return 1
+    
 
-
-
-
-
+models = Model()

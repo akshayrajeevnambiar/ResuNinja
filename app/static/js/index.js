@@ -1,5 +1,9 @@
-html, body, h1, h2, h3, p, ul, ol, li {
-    margin: 0;
-    padding: 0;
-    border: 0;
+updateList = function() {
+    var input = document.getElementById('fileInput');
+    var output = document.getElementById('fileList');
+    var children = "";
+    for (var i = 0; i < input.files.length; ++i) {
+        children += '<li>' + input.files.item(i).name + '</li>';
+    }
+    output.innerHTML = '<ul>'+children+'</ul>';
 }

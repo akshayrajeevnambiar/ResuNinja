@@ -6,7 +6,7 @@ from nltk.corpus import stopwords
 from scipy.sparse import csr_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from app.static.constants.modelConstants import ModelConstants
+from models.dataPreprocessing.constants.modelConstants import ModelConstants
 
 
 class WordProcessor:
