@@ -1,22 +1,39 @@
 import os
 from flask import Flask, render_template, request
 from models.model import Model
+import pandas as pd
 
 app = Flask(__name__)
-models = Model
+models = Model()
+
+app.config['UPLOAD_EXTENSIONS'] = ['.txt', '.docx', '.pdf']
 
 @app.route('/predict-resume', methods=['GET', 'POST'])
 def index():
-    input_data = []
+    uploaded_files = []
     if request.method == 'POST':
-        input_data = [
-            request.form.get('input_resumes')]
+        
+        prediction_model = request.form.get('predictionModel')
+        uploaded_files = request.files.getlist("fileInput[]")
+        
+        filesDf = pd.DataFrame(map(lambda x: x.filename, uploaded_files),columns=['fileName'])
+        
+        availableCategories = models.rawData['Category'].unique()
 
-        if input_data:
-            prediction = models.classify_resume(models, input_data)
-            return render_template('index.html', prediction=prediction,input_data = input_data)
+        if(len(filesDf) > 0):
 
-    return render_template('index.html',input_data = input_data)
+            if uploaded_files:
+                predictions = models.classify_resume(models, uploaded_files, prediction_model)
+                
+                predictionDf = pd.DataFrame(predictions,columns=['prediction'])
+                
+                uploaded_files = []
+                return render_template('index.html', countOfAvailableCategories = len(availableCategories),available_Categories=availableCategories, prediction_model=prediction_model, predictions=True,file_data=filesDf,prediction_data = predictionDf, countOfUploadedResumes = len(predictions))
+        else:
+            uploaded_files = []
+            return render_template('index.html', errors="Please upload valid files for resume classification. (eg. .txt)")
+
+    return render_template('index.html',input_data = uploaded_files)
 
 
 if __name__ == '__main__':

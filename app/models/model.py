@@ -12,24 +12,25 @@ from sklearn.metrics import accuracy_score, classification_report
 from models.dataPreprocessing.wordProcessor import WordProcessor
 from models.dataPreprocessing.constants.modelConstants import ModelConstants
 
+from ironpdf import *
+import textract
+
+
+License.LicenseKey = "IRONSUITE.VISMITAPAVDIGHADA.LOYALISTCOLLEGE.COM.30484-56E50DBD95-ESG3G-5C3SV7G4PQVG-JCZUKEF5GK4D-YJIJ7GNWNCCS-Z5RVJIKJQCL7-DZUBIE3MCVM4-K4CLFBPZ7RC7-2Z3ORS-TPOY5UG3QXSLEA-DEPLOYMENT.TRIAL-RDZXHS.TRIAL.EXPIRES.26.DEC.2023"
+
+
 class Model:
 
-    def __init__(self):
 
-        
+    def __init__(self, rawData = [], wordProcessor = WordProcessor()):
+
         resume_data_set = pd.read_csv("data/UpdatedResumeDataSet.csv")
 
-        self.x = resume_data_set['Resume']
-        self.y = resume_data_set['Category']
+        self.rawData = resume_data_set
 
-        # Instantiate WordProcessor
         self.wordProcessor = WordProcessor()
 
-        # Perform train-test split
-        self.x_train, self.x_test, self.y_train, self.y_test = self.wordProcessor.custom_train_test_split(
-            x = self.x,
-            y = self.y
-        )
+        self.load_train_models(self)
 
         
 
@@ -41,13 +42,28 @@ class Model:
     """
 
     def logistic_regression(self) -> np.ndarray:
-        model = LogisticRegression(
+        self.logisticRegressionModel = LogisticRegression(
             multi_class = 'auto',
             max_iter = ModelConstants.MAX_ITERS
         )
-        model.fit(self.x_train, self.y_train)
+        print("----------------------")
+        print(self.x_train.shape)
+        print(self.y_train.shape)
+        print("----------------------")
 
-        return model.predict(self.x_test)
+        self.logisticRegressionModel.fit(self.x_train, self.y_train)
+
+        return self.logisticRegressionModel.predict(self.x_test)
+    
+    """
+       Utilizes global Logistic Regression to return prediction.
+
+       Returns:
+           Predicted values for the test set
+    """
+
+    def predict_logistic_regression(self, inputResumesDf) -> np.ndarray:
+        return self.logisticRegressionModel.predict(inputResumesDf)
 
     """
            Creates a SVM model and fits it using the training data.
@@ -57,10 +73,13 @@ class Model:
     """
 
     def svm(self) -> np.ndarray:
-        model = SVC(kernel = 'linear')
-        model.fit(self.x_train, self.y_train)
+        self.svmModel = SVC(kernel = 'linear')
+        self.svmModel.fit(self.x_train, self.y_train)
 
-        return model.predict(self.x_test)
+        return self.svmModel.predict(self.x_test)
+    
+    def predict_svm(self, inputResumesDf) -> np.ndarray:
+        return self.svmModel.predict(inputResumesDf)
 
     """
             Creates a Naive Bayes model and fits it using the training data.
@@ -70,10 +89,13 @@ class Model:
     """
 
     def naive_bayes(self) -> np.ndarray:
-        model = MultinomialNB()
-        model.fit(self.x_train, self.y_train)
+        self.nbModel = MultinomialNB()
+        self.nbModel.fit(self.x_train, self.y_train)
 
-        return model.predict(self.x_test)
+        return self.nbModel.predict(self.x_test)
+    
+    def predict_naive_bayes(self, inputResumesDf) -> np.ndarray:
+        return self.nbModel.predict(inputResumesDf)
 
     """
         Creates a KNN model and fits it using the training data.
@@ -111,44 +133,98 @@ class Model:
 
         return accuracy, classification_rep
 
+    def read_file_content(self,file):
+        
+        file.save(os.path.join('data/resumes', file.filename))
+        originalFilePath = 'data/resumes/'+file.filename
+
+        match file.content_type:
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                text = textract.process(originalFilePath)
+                print(text)
+                content = text.decode("utf-8")
+                return file.filename, content
+            case "image/png":
+                newFileName = file.filename.split('.')[0] + ".pdf"
+                ImageToPdfConverter.ImageToPdf(originalFilePath).SaveAs('data/resumes/'+newFileName)
+                pdf = PdfDocument.FromFile('data/resumes/'+newFileName)
+                all_text = pdf.ExtractAllText()
+                print(all_text)
+                return file.filename, all_text
+            case "application/pdf":
+                pdf = PdfDocument.FromFile(originalFilePath)
+                all_text = pdf.ExtractAllText()
+                print(all_text)
+                return file.filename, all_text
+            case _:
+                file.seek(0, 0)
+                content = file.readlines()
+                content = b" ".join(content)
+                content = content.decode("utf-8")
+                return file.filename, content
+    
     @staticmethod
-    def load_train_models():
+    def classify_resume(self, inputResumes, predictionModel):
+
+        resumeContent =  [self.read_file_content(x) for x in inputResumes]
+        inputResumesDf = pd.DataFrame(resumeContent, columns =['inputFileName','inputFileContent'])
+        
+        inputResumesDfOutput = self.wordProcessor.setup_resume_data(inputResumesDf)
+
+        if(predictionModel == "Logistic Regression (Recommended)"):
+            return self.lb_encd.inverse_transform(self.predict_logistic_regression(inputResumesDfOutput))
+        if(predictionModel == "Support Vector Machine"):
+            return self.lb_encd.inverse_transform(self.predict_svm(inputResumesDfOutput))
+        if(predictionModel == "Naive Bayes"):
+            return self.lb_encd.inverse_transform(self.predict_naive_bayes(inputResumesDfOutput))
+        else:
+            return self.lb_encd.inverse_transform(self.predict_logistic_regression(inputResumesDfOutput))
+
+    @staticmethod
+    def load_train_models(self):
         # Example usage
         # Generate synthetic data for demonstration
-        X, y = make_classification(n_samples=1000, n_features=20, n_classes=3, random_state=42)
-        X_sparse = csr_matrix(X)
+        # X_sparse = csr_matrix(self.x)
+        
+        # Perform train-test split
+        # self.x_train, self.x_test, self.y_train, self.y_test = self.wordProcessor.custom_train_test_split(
+        #     x = self.x,
+        #     y = self.y
+        # )
+
+        self.x_train, self.x_test, self.y_train, self.y_test, self.lb_encd = self.wordProcessor.setup_data(
+            self.rawData
+        )
+
+        # X, y = make_classification(n_samples=1000, n_features=20, n_classes=3, random_state=42)
+        # X_sparse = csr_matrix(X)
+        
         # Instantiate the Models class
-        models_instance = Model(X_sparse, y)
+        # global models_instance
+        # models_instance = Model(X_sparse, y)
 
         # Train and evaluate Logistic Regression
-        logistic_regression_predictions = models_instance.logistic_regression()
-        accuracy_lr, report_lr = models_instance.get_classification_report(models_instance.y_test, logistic_regression_predictions)
+        logistic_regression_predictions = self.logistic_regression()
+        accuracy_lr, report_lr = self.get_classification_report(self.y_test, logistic_regression_predictions)
 
         print("Logistic Regression Accuracy:", accuracy_lr)
         print("Logistic Regression Classification Report:\n", report_lr)
 
-        # Train and evaluate Support Vector Machine
-        svm_predictions = models_instance.svm()
-        accuracy_svm, report_svm = models_instance.get_classification_report(models_instance.y_test, svm_predictions)
+        # # Train and evaluate Support Vector Machine
+        svm_predictions = self.svm()
+        accuracy_svm, report_svm = self.get_classification_report(self.y_test, svm_predictions)
 
         print("\nSVM Accuracy:", accuracy_svm)
         print("SVM Classification Report:\n", report_svm)
 
-        # Similarly, train and evaluate other models...
+        # # Similarly, train and evaluate other models...
 
-        # Train and evaluate Naive Bayes
-        nb_predictions = models_instance.naive_bayes()
-        accuracy_nb, report_nb = models_instance.get_classification_report(models_instance.y_test, nb_predictions)
+        # # Train and evaluate Naive Bayes
+        nb_predictions = self.naive_bayes()
+        accuracy_nb, report_nb = self.get_classification_report(self.y_test, nb_predictions)
 
         print("\nNaive Bayes Accuracy:", accuracy_nb)
         print("Naive Bayes Classification Report:\n", report_nb)
 
-        return models_instance
+        # return models_instance
     
-    def classify_resume(self, inputResume):
-        return 1
-    def classify_resumes(self, inputResumes):
-        return 1
-    
-
-models = Model()

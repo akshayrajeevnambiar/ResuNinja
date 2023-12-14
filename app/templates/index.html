@@ -1,84 +1,388 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>ResuNinja</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+        @media only screen and (max-device-width: 600px) {
+            h1 {
+                text-align: center;
+                font-family: fahkwang, sans-serif;
+                font-style: italic;
+                color: #DEB67C;
+                font-size: 160px;
+                text-shadow: rgba(0, 0, 0, 0.4) 0px 4px 5px;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+            .mainContainer {
+                width: 100%;
+                margin: auto;
+                overflow: hidden;
+                height: 100vh;
+                background-image: url('https://static.wixstatic.com/media/11062b_d73648135e664b9a8cf46311ffd25956~mv2.jpeg/v1/fill/w_1454,h_1080,al_t,q_85,enc_auto/11062b_d73648135e664b9a8cf46311ffd25956~mv2.jpeg');
+                text-align: center;
+            }
+
+            .resumePrediction {
+                width: 90%;
+                text-align: left;
+                display: inline-block;
+                background: #ffffff;
+                padding: 20px;
+                margin-top: 30px;
+                box-shadow: 0px 0px 20px 0px #000000;
+                border-radius: 10px;
+                font-size: 5rem;
+                position: relative;
+            }
+
+            form {
+                margin: 2rem 1rem 0 1rem;
+            }
+
+            form input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                margin: 8px 0px 25px -12px;
+                border: none;
+                background-color: #f0f0f0;
+                border-radius: 5px;
+            }
+
+            form label {
+                font-weight: bold;
+                color: #333;
+            }
+
+            form button[type="submit"] {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+            form button[type="submit"]:hover {
+                background: #2980b9;
+            }
+
+            .uploadedFiles {
+                display: none;
+                font-size: 3rem;
+            }
+
+            .title {
+                text-align: center;
+                padding: 3rem 0 1rem 0;
+
+
+            }
+
+            .title img {
+                width: 300px !important;
+                height: 200px !important;
+            }
+
+            .header {
+                text-align: center;
+            }
+
+            .submitButton,
+            .submitFeedbackButton {
+                background-color: rgb(51, 52, 63);
+                color: #DEB67C;
+                padding: 11px 16px;
+                font-size: 3rem;
+                margin-top: 2rem;
+            }
+
+            input,
+            select {
+                font-size: 2.5rem;
+            }
+
+            .predictionContainer,
+            .errorContainer {
+                margin: 0rem 1rem 0 1rem;
+            }
+
+            .errorContainer {
+
+                color: crimson;
+            }
+
+            .predictionContainer h4,
+            .errorContainer h4 {
+                margin-top: 3rem;
+            }
+
+            .predictionContainer ul {
+                font-size: 3rem;
+            }
         }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
+
+        @media only screen and (min-device-width: 600px) {
+            h1 {
+                text-align: center;
+                font-family: fahkwang, sans-serif;
+                font-style: italic;
+                color: #DEB67C;
+                font-size: 92px;
+                text-shadow: rgba(0, 0, 0, 0.4) 0px 4px 5px;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+            .mainContainer {
+                width: 100%;
+                margin: auto;
+                overflow: hidden;
+                height: 100vh;
+                background-image: url('https://static.wixstatic.com/media/11062b_d73648135e664b9a8cf46311ffd25956~mv2.jpeg/v1/fill/w_1454,h_1080,al_t,q_85,enc_auto/11062b_d73648135e664b9a8cf46311ffd25956~mv2.jpeg');
+                text-align: center;
+            }
+
+            .resumePrediction {
+                width: 80%;
+                text-align: left;
+                display: inline-block;
+                background: #ffffff;
+                padding: 20px;
+                margin-top: 30px;
+                box-shadow: 0px 0px 20px 0px #000000;
+                border-radius: 10px;
+                position: relative;
+            }
+
+            form {
+                margin: 2rem 1rem 0 1rem;
+            }
+
+            form input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                margin: 8px 0px 25px -12px;
+                border: none;
+                background-color: #f0f0f0;
+                border-radius: 5px;
+            }
+
+            form label {
+                font-weight: bold;
+                color: #333;
+            }
+
+            form button[type="submit"] {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+            form button[type="submit"]:hover {
+                background: #2980b9;
+            }
+
+            .title {
+                text-align: center;
+                padding: 3rem 0 1rem 0;
+            }
+
+            .header {
+                text-align: center;
+            }
+
+            .submitButton,
+            .submitFeedbackButton {
+                background-color: rgb(51, 52, 63);
+                color: #DEB67C;
+                padding: 11px 16px;
+                margin-top: 1rem;
+            }
+
+            .predictionContainer,
+            .errorContainer {
+                margin: 2rem 1rem 0 1rem;
+            }
+
         }
-        form {
-            background: #ffffff;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: 0px 0px 20px 0px #000000;
-            border-radius: 10px;
+
+        #resetResumePredictions {
+            margin-left: 0;
+            width: 40%;
+            bottom: 20px;
+            left: 60%;
+            position: absolute;
         }
-        form input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0px 25px -12px;
-            border: none;
-            background-color: #f0f0f0;
-            border-radius: 5px;
+
+        .uploadedFiles,
+        .submitFeedbackButtonSubmitted,
+        #submitPredictionFeedback {
+            display: none;
         }
-        form label {
-            font-weight: bold;
-            color: #333;
+
+        #submitPredictionFeedback {
+            margin-left: 0;
         }
-        form button[type="submit"] {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
+
+        #submitFeedbackContainer {
+            margin-top: 3rem;
+            margin-left: 1rem;
+            width: 50%;
+            float: left;
         }
-        form button[type="submit"]:hover {
-            background: #2980b9;
+
+        .errorContainer {
+            color: crimson;
+            font-size: 2rem;
+            display: none;
+        }
+
+        .submitFeedbackButtonSubmitted {
+            font-weight: bolder;
+            color: forestgreen;
+        }
+
+        .submitFeedbackButton:disabled {
+            background-color: darkgrey;
+        }
+
+        .feedbackRow label {
+            font-weight: normal;
+        }
+
+        .feedbackRow select {
+            right: 50%;
+            position: absolute;
         }
     </style>
 
 </head>
+
 <body>
-    <div class="container">
-        <h1>ResuNinja</h1>
-        <form method="POST" action="/" enctype="multipart/form-data">
-            <label for="resumes">Upload Resume(s):</label>
-                <input id="fileInput" type="file" name="resumes" multiple onchange="updateList()">
-            <br><br>
-            <label for="model">Choose a Prediction Model:</label>
-            <select id="model" name="model">
-            <option value="logisticRegression">Logistic Regression (Recommended)</option>
-            <option value="svm">support Vector Machine</option>
-            <option value="naiveBayes">Naive Bayes</option>
-            <option value="knn">K Nearest Neighbours</option>
-            <option value="randomForest">Random Forest</option>
-            </select>
-            <br><br>
-            <p>Selected files:</p>
-    
-            <div id="fileList"></div>
-            <br><br><br><br>
-            
-            <input type="submit" value="Upload & Analyze">
-        </form>
-        
-        {% if prediction %}
-        <h3>Predictions:</h3>
-        <ul>
-            <li>{{ prediction[0] }} - Confidence: {{ prediction[1] }}</li>
-        </ul>
-        {% endif %}
+    <div class="title">
+        <img class="headerLogo"
+            src="https://static.wixstatic.com/media/29bdc9_6dc21264e643441d80483d85314c4f60~mv2.png/v1/fill/w_163,h_140,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/resuninjaLogo.png"
+            alt="resuninjaLogo.png"
+            style="width: 94px; height: 80px; object-fit: contain; object-position: center center;" width="94"
+            height="80"
+            srcset="https://static.wixstatic.com/media/29bdc9_6dc21264e643441d80483d85314c4f60~mv2.png/v1/fill/w_163,h_140,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/resuninjaLogo.png"
+            fetchpriority="high">
     </div>
-    
+    <div class="mainContainer">
+
+        <div class="header">
+            <h1>Welcome to ResuNinja</h1>
+        </div>
+
+        <div class="resumePrediction">
+            {% if not(predictions) and not(errors) %}
+            <form method="POST" action="/predict-resume" enctype="multipart/form-data"
+                onsubmit="return validateInput();">
+                <label for="resumes">Upload Resume(s):</label>
+                <input id="fileInput" type="file" name="fileInput[]" multiple accept=".txt, .doc, .docx, .pdf"
+                    onchange="updateList()">
+                <br><br><br>
+                <label for="predictionModel">Choose a Prediction Model:</label>
+                <select id="predictionModel" name="predictionModel">
+                    <option value="Logistic Regression">Logistic Regression (Recommended)</option>
+                    <option value="Support Vector Machine">Support Vector Machine</option>
+                    <option value="Naive Bayes">Naive Bayes</option>
+                    <option value="K Nearest Neighbours">K Nearest Neighbours</option>
+                    <option value="Random Forest">Random Forest</option>
+                </select>
+                <br><br><br>
+
+                <div class="uploadedFiles" id="uploadedFiles">
+                    <p>Selected files:</p>
+
+                    <div id="fileList"></div>
+                    <br>
+                </div>
+
+                <input class="submitButton" type="submit" value="Upload & Analyze">
+
+            </form>
+            {% endif %}
+
+            {% if predictions %}
+            <div class="predictionContainer">
+                <h4>Predictions using {{prediction_model}} Model:</h4>
+
+                <ul>
+                    {%for i in range(0, countOfUploadedResumes)%}
+                    <li>{{file_data.loc[i,'fileName']}} -> {{ prediction_data.loc[i,'prediction']}}</li>
+                    {%endfor%}
+                </ul>
+            </div>
+
+            <div id="submitFeedbackContainer">
+                <input type="radio" class="submitFeedbackRadioOptions" id="submitFeedbackTrue" name="submitFeedback"
+                    value="true" checked onchange="submitFormOption(false);">
+                <label for="html">Classifications are correct.</label><br>
+                <input type="radio" id="submitFeedbackFalse" class="submitFeedbackRadioOptions" name="submitFeedback"
+                    value="false" onchange="submitFormOption(true);">
+                <label for="css">Classifications are incorrect correct.</label><br>
+                <form id="submitPredictionFeedback" method="POST" action="/submit-feedback"
+                    enctype="multipart/form-data">
+
+                    <h4>Feedback:</h4>
+                    <ul>
+                        {%for i in range(0, countOfUploadedResumes)%}
+                        <li class="feedbackRow">
+                            <label for="fname-{{i}}">{{file_data.loc[i,'fileName']}}</label>
+                            <select name="fname-{{i}}" id="fname-{{i}}">
+                                {%for j in range(0, countOfAvailableCategories)%}
+                                <option value="volvo">{{available_Categories[j]}}</option>
+                                {%endfor%}
+                            </select>
+                        </li>
+
+                        {%endfor%}
+                    </ul>
+                    <br /><br /><br />
+
+                    <div class="submitFeedbackButtonSubmitted" id="submitFeedbackButtonSubmitted">
+
+                        <span>&#10003;</span>
+                        <label>Feedback Submitted!</label>
+                    </div>
+                    <input class="submitFeedbackButton" type="button" onclick="submitFeedback()"
+                        value="Submit Feedback">
+                </form>
+
+            </div>
+
+            <form id="resetResumePredictions" method="GET" action="/predict-resume" enctype="multipart/form-data">
+                <input class="submitButton" type="submit" value="Predict new resumes">
+            </form>
+            {% endif %}
+
+            <div class="errorContainer" id="errorContainer">
+                <h4>Error!</h4>
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </body>
-<script src="../static/js/index.js"></script>  
+<script src="../static/js/index.js"></script>
+
 </html>

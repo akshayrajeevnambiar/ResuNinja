@@ -1,16 +1,106 @@
+import pickle
 import nltk
 import string
+import re
 import numpy as np
+import pandas as pd
 from typing import Union
 from nltk.corpus import stopwords
 from scipy.sparse import csr_matrix
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, TfidfTransformer, CountVectorizer
 from models.dataPreprocessing.constants.modelConstants import ModelConstants
 
 
 class WordProcessor:
 
+
+    @staticmethod
+    def setup_data(raw_df) -> pd.DataFrame:
+        raw_df['Resume'] = raw_df['Resume'].apply(lambda x: x.encode('utf-8').decode('utf-8', 'ignore'))
+        raw_df['cleaned_resume'] = raw_df.Resume.apply(lambda x: WordProcessor.special_character_removal(x))
+        raw_df['encoded_category'] = raw_df['Category']
+
+        lb_encd = LabelEncoder()
+        for i in ['encoded_category']:
+            raw_df[i] = lb_encd.fit_transform(raw_df[i])
+
+        x = raw_df['cleaned_resume'].values
+        y = raw_df['encoded_category'].values
+
+        print(raw_df['encoded_category'])
+        word_vectorizer = TfidfVectorizer(
+            sublinear_tf=True,
+            analyzer='word', 
+            ngram_range=(1,2), 
+            stop_words = "english", 
+            lowercase = True, 
+            max_features = 500000
+        )
+        
+        word_vectorizerobj = word_vectorizer.fit(x)
+        # # Dump the file
+        pickle.dump(word_vectorizer.vocabulary_, open("tfidfvocab1.pkl", "wb"))
+        wordFeatures = word_vectorizer.transform(x)
+        X_train,X_test,y_train,y_test = train_test_split(
+            wordFeatures,
+            y,
+            random_state = 42, 
+            test_size = 0.2,
+            shuffle=True, 
+            stratify=y
+        )
+
+        return X_train,X_test,y_train,y_test,lb_encd
+
+    @staticmethod
+    def setup_resume_data(raw_resume_input):
+        # Testing phase
+        # transformer = TfidfTransformer()
+        # loaded_vec = CountVectorizer(decode_error="replace",vocabulary=pickle.load(open("tfidf1.pkl", "rb")))
+        tf1vocab = pickle.load(open("tfidfvocab1.pkl", "rb"))
+        word_Vectorizer_new = TfidfVectorizer(
+            sublinear_tf=True,
+            analyzer='word', 
+            ngram_range=(1,2), 
+            stop_words = "english", 
+            lowercase = True, 
+            max_features = 500000, 
+            vocabulary = tf1vocab
+        )
+        
+        raw_resume_input['inputFileContentCleaned'] = raw_resume_input['inputFileContent'].apply(lambda x: x.encode('utf-8').decode('utf-8', 'ignore'))
+        raw_resume_input['inputFileContentCleaned'] = raw_resume_input.inputFileContentCleaned.apply(lambda x: WordProcessor.special_character_removal(x))
+        
+        # word_Vectorizer.fit(raw_resume_input['inputFileContentCleaned'])
+        word_Vectorizer_new.fit(raw_resume_input['inputFileContentCleaned'])
+
+        output = word_Vectorizer_new.transform(raw_resume_input['inputFileContentCleaned'].to_numpy())
+        return output
+
+    """
+        Cleanup non-english characters from the input text.
+
+        Parameters:
+            text(str): Input text.
+
+        Returns:
+            list: List of important words after special character removal.
+    """
+
+    @staticmethod
+    def special_character_removal(resumeText: str) -> str:
+        resumeText = re.sub('http\S+\s*', ' ', resumeText)  # remove URLs
+        resumeText = re.sub('RT|cc', ' ', resumeText)  # remove RT and cc
+        resumeText = re.sub('#\S+', '', resumeText)  # remove hashtags
+        resumeText = re.sub('@\S+', '  ', resumeText)  # remove mentions
+        resumeText = re.sub('[%s]' % re.escape("""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""), ' ', resumeText)  # remove punctuations
+        resumeText = re.sub(r'[^\x00-\x7f]',r' ', resumeText) 
+        resumeText = re.sub('\s+', ' ', resumeText)  # remove extra whitespace 
+
+        return resumeText 
+    
     """
         Remove common English stop words and punctuation from the input text.
 
@@ -119,6 +209,3 @@ text_data = np.array([
     ])
 
 result_matrix = word_processor.word_tokenizer(text_data)
-
-print("Tokenized Matrix:")
-print(result_matrix)
